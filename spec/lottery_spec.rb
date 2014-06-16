@@ -13,21 +13,69 @@ describe PowerballScraper do
   end
 
   context "calculating winnings" do
-    it "should return zero if no numbers match" do
-      drawing = Drawing.new
-      ticket = Ticket.new
-      drawing.date, ticket.date = "6/14/2014", "6/14/2014"
-      drawing.numbers = "1 2 3 4 5".split(" ")
-      drawing.powerball = "6"
-      drawing.powerplay = "2x"
-      ticket.numbers = "7 8 9 10 11".split(" ")
-      ticket.powerball = "12"
-      ticket.powerplay = false
-      drawing.check_numbers(ticket)
-      expect(drawing.calc_winnings()).to eq(0)
+    before(:all) do
+      @drawing = Drawing.new
+      @ticket = Ticket.new
+      @drawing.date, @ticket.date = "6/14/2014", "6/14/2014"
+      @drawing.numbers = "1 2 3 4 5".split(" ")
+      @drawing.powerball = "6"
+      @drawing.powerplay = "2x"
     end
 
-    #it "should not match a regular number to the powerball" do
-    #end
+    it "should return zero if no numbers match" do
+      @ticket.numbers = "7 8 9 10 11".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(0)
+    end
+
+    it "should not match a regular number to the powerball" do
+      @ticket.numbers = "6 7 8 9 10".split(" ")
+      @ticket.powerball = "11"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(0)
+    end
+
+    it "should return zero if one regular number matches" do
+      @ticket.numbers = "5 7 8 9 10".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(0)
+    end
+
+    it "should return zero if two regular numbers match" do
+      @ticket.numbers = "4 5 7 8 9".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(0)
+    end
+
+    it "should return seven if three regular numbers match" do
+      @ticket.numbers = "3 4 5 7 8".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(7)
+    end
+
+    it "should return one hundred if four regular numbers match" do
+      @ticket.numbers = "2 3 4 5 7".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(100)
+    end
+
+    it "should return one million if all five regular numbers match" do
+      @ticket.numbers = "1 2 3 4 5".split(" ")
+      @ticket.powerball = "12"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(1_000_000)
+    end
   end
 end
