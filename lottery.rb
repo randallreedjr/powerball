@@ -3,7 +3,9 @@ require_relative 'drawing.rb'
 require_relative 'ticket.rb'
 
 def run
+  puts "Welcome to Powerball checker. Good luck!"
   scraper = PowerballScraper.new
+  puts "Loading drawing results..."
   scraper.scrape()
   ticket = Ticket.new
   puts "What date was your drawing?"
@@ -21,9 +23,13 @@ def run
       drawing.check_numbers(ticket)
       winnings = drawing.calc_winnings
       if winnings > 0
-        puts "Congrats! #{winnings}"
+        if winnings == drawing.jackpot
+          puts "YOU HIT THE JACKPOT!!! Check the powerball site for your official winnings amount."
+        else
+          puts "Congrats! You won #{winnings}!"
+        end
       else
-        puts "Sorry, 0"
+        puts "Sorry, you didn't win this time. Better luck next time."
       end
     end
   end

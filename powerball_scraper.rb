@@ -1,6 +1,4 @@
-require 'open-uri'
-require 'nokogiri'
-require_relative 'drawing.rb'
+require_relative "config/environment.rb"
 
 class PowerballScraper
 

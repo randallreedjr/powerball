@@ -7,4 +7,8 @@ class Ticket
     @powerball = 0
     @powerplay = false
   end
+
+  def powerplay?
+    @powerplay
+  end
 end
