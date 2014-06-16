@@ -77,5 +77,90 @@ describe PowerballScraper do
       @drawing.check_numbers(@ticket)
       expect(@drawing.calc_winnings()).to eq(1_000_000)
     end
+
+    it "should return four if only powerball matches" do
+      @ticket.numbers = "7 8 9 10 11".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(4)
+    end
+
+    it "should return four if powerball and one other number matches" do
+      @ticket.numbers = "1 7 8 9 10".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(4)
+    end
+
+    it "should return seven if powerball and two other numbers match" do
+      @ticket.numbers = "1 2 7 8 9".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(7)
+    end
+
+    it "should return one hundred if powerball and three other numbers match" do
+      @ticket.numbers = "1 2 3 7 8".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(100)
+    end
+
+    it "should return ten thousand if powerball and four other numbers match" do
+      @ticket.numbers = "1 2 3 4 7".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(10_000)
+    end
+
+    it "should return jackpot if powerball and five other numbers match" do
+      @ticket.numbers = "1 2 3 4 5".split(" ")
+      @ticket.powerball = "6"
+      @ticket.powerplay = false
+      @drawing.check_numbers(@ticket)
+      expect(@drawing.calc_winnings()).to eq(@drawing.jackpot)
+    end
+
+    context "powerplay" do
+      before(:all) do
+        @ticket.powerplay = true
+      end
+      it "should multiply winnings by powerplay without powerball" do
+        @ticket.numbers = "1 2 3 7 8".split(" ")
+        @ticket.powerball = "12"
+        @drawing.powerplay = "3X"
+        @drawing.check_numbers(@ticket)
+        expect(@drawing.calc_winnings()).to eq(21)
+      end
+
+      it "should multiply winnings by powerplay with powerball" do
+        @ticket.numbers = "1 2 3 7 8".split(" ")
+        @ticket.powerball = "6"
+        @drawing.powerplay = "5X"
+        @drawing.check_numbers(@ticket)
+        expect(@drawing.calc_winnings()).to eq(500)
+      end
+
+      it "should not affect jackpot" do
+        @ticket.numbers = "1 2 3 4 5".split(" ")
+        @ticket.powerball = "6"
+        @drawing.powerplay = "2X"
+        @drawing.check_numbers(@ticket)
+        expect(@drawing.calc_winnings()).to eq(@drawing.jackpot)
+      end
+
+      it "should max out at two million" do
+        @ticket.numbers = "1 2 3 4 5".split(" ")
+        @ticket.powerball = "12"
+        @drawing.powerplay = "4X"
+        @drawing.check_numbers(@ticket)
+        expect(@drawing.calc_winnings()).to eq(2_000_000)
+      end
+    end
   end
 end
