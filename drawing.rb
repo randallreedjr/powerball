@@ -52,7 +52,7 @@ class Drawing
       when 4
         return 100 * multiplier
       when 5
-        return min(1_000_000 * multiplier, 2_000_000)
+        return [1_000_000 * multiplier, 2_000_000].min
       end
     end
     return 0
