@@ -10,7 +10,7 @@ def run
   ticket = Ticket.new
   puts "What date was your drawing?"
   #To Do - Normalize Date
-  ticket.date = gets.chomp
+  ticket.date = normalize_date(gets.chomp)
   puts "Enter your five regular numbers"
   ticket.numbers = gets.chomp.split(" ")
   puts "Enter your powerball number"
@@ -33,6 +33,10 @@ def run
       end
     end
   end
+end
+
+def normalize_date(date)
+  date.gsub!(/\b0/,"").gsub!(/\d{2,4}\z/,"20#{date[-2..-1]}")
 end
 
 run()
